@@ -13,6 +13,10 @@ export function initEvents (vm: Component) {
   vm._events = Object.create(null)
   vm._hasHookEvent = false
   // init parent attached events
+  // 这儿为什么怎么写呢，因为其实对于父子组件，事件的监听最后还是落到子组件里面的，所以需要去找父组件中的监听事件
+  // <Child @myclick="onmyclick">
+  // this.$on('myclick', onmyclick)
+  // this.#emit('myclick')
   const listeners = vm.$options._parentListeners
   if (listeners) {
     updateComponentListeners(vm, listeners)

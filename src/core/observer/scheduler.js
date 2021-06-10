@@ -92,6 +92,7 @@ function flushSchedulerQueue () {
     }
     id = watcher.id
     has[id] = null
+    // 真正的更新函数
     watcher.run()
     // in dev build, check and stop circular updates.
     if (process.env.NODE_ENV !== 'production' && has[id] != null) {
@@ -163,6 +164,7 @@ function callActivatedHooks (queue) {
  */
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id
+  // 判断是否有相同的watcherid，有的话就去重
   if (has[id] == null) {
     has[id] = true
     if (!flushing) {
@@ -184,6 +186,8 @@ export function queueWatcher (watcher: Watcher) {
         flushSchedulerQueue()
         return
       }
+      // 这里调用的就是熟悉的nextTick
+      // 异步执行flushSchedulerQueue
       nextTick(flushSchedulerQueue)
     }
   }

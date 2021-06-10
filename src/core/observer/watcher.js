@@ -128,10 +128,13 @@ export default class Watcher {
    */
   addDep (dep: Dep) {
     const id = dep.id
+    // 相互添加引用
     if (!this.newDepIds.has(id)) {
+      // watcher添加dep
       this.newDepIds.add(id)
       this.newDeps.push(dep)
       if (!this.depIds.has(id)) {
+        // dep添加watcher
         dep.addSub(this)
       }
     }
@@ -165,10 +168,13 @@ export default class Watcher {
   update () {
     /* istanbul ignore else */
     if (this.lazy) {
+      // 懒执行： computed
       this.dirty = true
     } else if (this.sync) {
+      // 同步执行，像$watch后面的参数是sync的情况
       this.run()
     } else {
+      // 异步执行，通常走这里，watcher入队队列
       queueWatcher(this)
     }
   }

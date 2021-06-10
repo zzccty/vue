@@ -39,9 +39,11 @@ let timerFunc
 // completely stops working after triggering a few times... so, if native
 // Promise is available, we will use it:
 /* istanbul ignore next, $flow-disable-line */
+// 首选是Promise方案
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   const p = Promise.resolve()
   timerFunc = () => {
+    // 存放flushCallbacks到微任务队列, 异步的执行
     p.then(flushCallbacks)
     // In problematic UIWebViews, Promise.then doesn't completely break, but
     // it can get stuck in a weird state where callbacks are pushed into the
@@ -86,9 +88,11 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
 
 export function nextTick (cb?: Function, ctx?: Object) {
   let _resolve
+  // callbacks: 存放异步任务数组
   callbacks.push(() => {
     if (cb) {
       try {
+        // 执行回调函数
         cb.call(ctx)
       } catch (e) {
         handleError(e, ctx, 'nextTick')
@@ -99,6 +103,7 @@ export function nextTick (cb?: Function, ctx?: Object) {
   })
   if (!pending) {
     pending = true
+    // 真正的处理异步队列
     timerFunc()
   }
   // $flow-disable-line

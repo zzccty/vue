@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p id="demo">{{foo}}</p>
+    <script src="../../dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#demo',
+            data: {
+                foo: 'ready~~'
+            },
+            mounted() {
+                // 比较一下几种情况的输出
+                // 1
+                // this.foo = Math.random()
+                // console.log(1, this.foo)
+                // this.foo = Math.random()
+                // console.log(2, this.foo)
+                // // 还是会去执行3
+                // this.$nextTick(() => {
+                //     console.log('p1.innerHTML' + demo.innerHTML)
+                // })
+                // this.foo = Math.random()
+                // console.log(3, this.foo)
+                // console.log('innerHTML',demo.innerHTML)
+                
+                // 2
+                // this.$nextTick(() => {
+                //     console.log('p1.innerHTML' + demo.innerHTML)
+                // })
+                // this.foo = Math.random()
+                // console.log(1, this.foo)
+                // this.foo = Math.random()
+                // console.log(2, this.foo)
+                // this.foo = Math.random()
+                // console.log(3, this.foo)
+                // console.log('innerHTML',demo.innerHTML)
+
+                // 微任务队列 [flushCallbacks， Promise]
+                // callbacks [flushSchedulerQueue, nextTick] 
+                this.foo = Math.random()
+                console.log(1, this.foo)
+                this.foo = Math.random()
+                console.log(2, this.foo)
+
+                console.log('innerHTML',demo.innerHTML)
+                Promise.resolve().then(() => {
+                    console.log('Promise' + demo.innerHTML)
+                })
+                this.$nextTick(() => {
+                    console.log('p1.innerHTML' + demo.innerHTML)
+                })
+                this.foo = Math.random()
+                console.log(3, this.foo)
+   
+            }
+        })
+    </script>
+    <script>
+        let id = 0;
+        class Watcher {
+            constructor() {
+                this.uid = ++id
+            }
+        }
+        let w = new Watcher()
+        console.log(w)
+        let w1 = new Watcher()
+        console.log(w1)
+    </script>
+</body>
+</html>

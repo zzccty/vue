@@ -1,5 +1,5 @@
 /* @flow */
-
+// 入口地址
 import config from 'core/config'
 import { warn, cached } from 'core/util/index'
 import { mark, measure } from 'core/util/perf'
@@ -13,12 +13,13 @@ const idToTemplate = cached(id => {
   const el = query(id)
   return el && el.innerHTML
 })
-
+// 扩展$mount: 解析模板
 const mount = Vue.prototype.$mount
 Vue.prototype.$mount = function (
-  el?: string | Element,
+  el?: string | Element, // 宿主元素
   hydrating?: boolean
 ): Component {
+  // 获取真实dom
   el = el && query(el)
 
   /* istanbul ignore if */
@@ -31,9 +32,12 @@ Vue.prototype.$mount = function (
 
   const options = this.$options
   // resolve template/el and convert to render function
+  // 先判断有没有render
   if (!options.render) {
     let template = options.template
+    // 解析template
     if (template) {
+      //如果模板是字符串
       if (typeof template === 'string') {
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
@@ -45,7 +49,7 @@ Vue.prototype.$mount = function (
             )
           }
         }
-      } else if (template.nodeType) {
+      } else if (template.nodeType) { // 如果模板是dom元素
         template = template.innerHTML
       } else {
         if (process.env.NODE_ENV !== 'production') {
@@ -54,6 +58,7 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+      //如果没有template则查看有没有el选项，有的话就将值赋给template
       template = getOuterHTML(el)
     }
     if (template) {
@@ -61,7 +66,7 @@ Vue.prototype.$mount = function (
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile')
       }
-
+      //编译
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -69,6 +74,7 @@ Vue.prototype.$mount = function (
         delimiters: options.delimiters,
         comments: options.comments
       }, this)
+      //生成render函数
       options.render = render
       options.staticRenderFns = staticRenderFns
 

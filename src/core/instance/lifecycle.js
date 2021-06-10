@@ -137,7 +137,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
   }
 }
-
+// 执行$mount()会调用
 export function mountComponent (
   vm: Component,
   el: ?Element,
@@ -186,6 +186,7 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+    // 组件更新函数
     updateComponent = () => {
       vm._update(vm._render(), hydrating)
     }
@@ -194,6 +195,7 @@ export function mountComponent (
   // we set this to vm._watcher inside the watcher's constructor
   // since the watcher's initial patch may call $forceUpdate (e.g. inside child
   // component's mounted hook), which relies on vm._watcher being already defined
+  // 创建一个和当前组件配对的watcher实例
   new Watcher(vm, updateComponent, noop, {
     before () {
       if (vm._isMounted && !vm._isDestroyed) {

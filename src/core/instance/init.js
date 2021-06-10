@@ -29,6 +29,7 @@ export function initMixin (Vue: Class<Component>) {
     // a flag to avoid this being observed
     vm._isVue = true
     // merge options
+    // 合并选项：因为new Vue时传入的是用户配置选项，他们需要和系统配置合并
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
@@ -48,14 +49,18 @@ export function initMixin (Vue: Class<Component>) {
       vm._renderProxy = vm
     }
     // expose real self
+
+    //
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
-    initRender(vm)
+    initLifecycle(vm) //说是生命周期，其实是初始化一些实例属性像$parent,$root,$children,$refs
+    initEvents(vm) // 自定义事件处理
+    initRender(vm) //插槽解析，$slots, $scopeSlots, $createElement()
     callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
-    initState(vm)
-    initProvide(vm) // resolve provide after data/props
+    // 接下来是和组件数据相关的操作
+    // inject/provide隔代传参
+    initInjections(vm) // resolve injections before data/props 注入祖辈传递下来的数据
+    initState(vm) // 数据响应式:prop，data，watch，filter，methods，computed
+    initProvide(vm) // resolve provide after data/props 提供给后代
     callHook(vm, 'created')
 
     /* istanbul ignore if */

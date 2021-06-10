@@ -2,7 +2,7 @@ import Vue from './instance/index'
 import { initGlobalAPI } from './global-api/index'
 import { isServerRendering } from 'core/util/env'
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
-
+// 初始化全局API： 像Vue.use/componets/directive/filter/mixin/set/extend/delete
 initGlobalAPI(Vue)
 
 Object.defineProperty(Vue.prototype, '$isServer', {
